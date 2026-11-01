@@ -26,7 +26,7 @@ export async function findRecipes(filters: RecipeFilters = {}): Promise<Recipe[]
     conditions.push(sql`${recipes.mealType} @> ARRAY[${filters.mealType}]::text[]`)
   }
   if (filters.dietary?.length) {
-    conditions.push(sql`${recipes.dietary} @> ${filters.dietary}::text[]`)
+    conditions.push(arrayContains(recipes.dietary, filters.dietary))
   }
   if (filters.cuisine) {
     conditions.push(ilike(recipes.cuisine, filters.cuisine))

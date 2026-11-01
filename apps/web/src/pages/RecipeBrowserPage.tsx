@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import SearchInput from '@/components/ui/SearchInput'
 import RecipeFilters from '@/components/recipe/RecipeFilters'
@@ -39,9 +40,16 @@ export default function RecipeBrowserPage() {
     <div className="min-h-screen bg-background p-6 space-y-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-3xl font-heading text-nosh-green">Recipes</h1>
-        <Button asChild>
-          <Link to="/recipes/new">+ Add recipe</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/preferences" aria-label="Preferences">
+              <Settings />
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link to="/recipes/new">+ Add recipe</Link>
+          </Button>
+        </div>
       </div>
 
       <SearchInput
