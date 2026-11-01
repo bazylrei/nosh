@@ -1,6 +1,10 @@
 import { api } from './api'
 import type { Recipe, MealType, Dietary } from '@nosh/shared'
 
+export function fetchRecipeById(id: string): Promise<Recipe> {
+  return api.get(`/api/recipes/${id}`)
+}
+
 export interface RecipeFilters {
   search?: string
   mealType?: MealType
