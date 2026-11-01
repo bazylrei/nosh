@@ -52,9 +52,10 @@ export async function findRecipeById(id: string): Promise<Recipe | undefined> {
 }
 
 export async function createRecipe(data: CreateRecipe): Promise<Recipe> {
+  const { name, cuisine, mealType, dietary, tags, serves, ingredients, method } = data
   const [row] = await db
     .insert(recipes)
-    .values({ ...data, isCustom: true })
+    .values({ name, cuisine, mealType, dietary, tags, serves, ingredients, method, isCustom: true })
     .returning()
   return toRecipe(row)
 }

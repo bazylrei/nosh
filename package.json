@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "pnpm --parallel --filter @nosh/web --filter @nosh/api dev",
     "build": "pnpm --filter './packages/*' build && pnpm --filter './apps/*' build",
+    "typecheck": "pnpm -r run lint",
     "format": "prettier --write ."
   },
   "devDependencies": {
