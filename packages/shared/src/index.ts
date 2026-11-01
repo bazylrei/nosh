@@ -22,6 +22,7 @@ export const RecipeSchema = z.object({
   ingredients: z.array(IngredientSchema),
   method: z.array(z.string()),
   createdAt: z.string().optional(),
+  costPerPerson: z.number().nullable().optional(),
 })
 
 export const CreateRecipeSchema = RecipeSchema.omit({ id: true, isCustom: true, createdAt: true })
@@ -61,6 +62,22 @@ export type MealSlot = z.infer<typeof MealSlotSchema>
 export type UpsertMealSlot = z.infer<typeof UpsertMealSlotSchema>
 export type ShoppingItem = z.infer<typeof ShoppingItemSchema>
 export type UserPreferences = z.infer<typeof UserPreferencesSchema>
+
+export const PriceEntrySchema = z.object({
+  priceGBP: z.number().positive(),
+  per: z.number().positive(),
+  unit: z.string(),
+})
+export const PriceMapSchema = z.record(PriceEntrySchema)
+
+export type PriceEntry = z.infer<typeof PriceEntrySchema>
+export type PriceMap = z.infer<typeof PriceMapSchema>
+
+export type CostEstimate = {
+  totalGBP: number
+  coveredCount: number
+  totalCount: number
+}
 
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const
 export const MEAL_TYPES: MealType[] = ['breakfast', 'lunch', 'dinner']

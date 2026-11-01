@@ -18,6 +18,7 @@ export default function RecipeCard({ recipe }: Props) {
         </div>
         <p className="text-sm text-muted-foreground">
           {recipe.cuisine} · Serves {recipe.serves}
+          {recipe.costPerPerson != null && ` · ~£${recipe.costPerPerson.toFixed(2)}/person`}
         </p>
       </CardHeader>
       <CardContent className="flex flex-col gap-2 pt-0">

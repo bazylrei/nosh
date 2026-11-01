@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import ServingStepper from '@/components/recipe/ServingStepper'
 import IngredientList from '@/components/recipe/IngredientList'
 import MethodSteps from '@/components/recipe/MethodSteps'
+import CostBadge from '@/components/recipe/CostBadge'
 import { fetchRecipeById } from '@/lib/recipes'
 
 export default function RecipeDetailPage() {
@@ -42,6 +43,9 @@ export default function RecipeDetailPage() {
         <div className="flex flex-wrap gap-2">
           {recipe.mealType.map((t) => <Badge key={t}>{t}</Badge>)}
           {recipe.dietary.map((d) => <Badge key={d} variant="outline">{d}</Badge>)}
+          {recipe.costPerPerson != null && (
+            <CostBadge costPerPerson={recipe.costPerPerson} serves={selectedServes} />
+          )}
         </div>
       </div>
 

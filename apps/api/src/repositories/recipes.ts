@@ -1,6 +1,7 @@
 import { eq, and, ilike, arrayContains, inArray, sql } from 'drizzle-orm'
 import { db } from '../db/client.js'
 import { recipes } from '../db/schema.js'
+import { computeCostPerPerson } from '../lib/pricing.js'
 import type { Recipe, CreateRecipe, UpdateRecipe, MealType, Dietary } from '@nosh/shared'
 
 export type RecipeFilters = {
@@ -11,12 +12,14 @@ export type RecipeFilters = {
 }
 
 function toRecipe(row: typeof recipes.$inferSelect): Recipe {
-  return {
+  const recipe: Recipe = {
     ...row,
     mealType: row.mealType as MealType[],
     dietary: row.dietary as Dietary[],
     createdAt: row.createdAt.toISOString(),
   }
+  recipe.costPerPerson = computeCostPerPerson(recipe)
+  return recipe
 }
 
 export async function findRecipes(filters: RecipeFilters = {}): Promise<Recipe[]> {

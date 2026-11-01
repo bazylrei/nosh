@@ -22,7 +22,7 @@ const mockRecipe: Recipe = {
   method: ['Sauté onions.', 'Add lentils and stock.', 'Simmer for 25 minutes.'],
 }
 
-function makeFetch(recipe: Recipe) {
+function makeFetch(recipe: Recipe = mockRecipe) {
   return vi.fn(() =>
     Promise.resolve({ ok: true, json: () => Promise.resolve(recipe) })
   )
@@ -41,8 +41,9 @@ function wrapper({ children }: { children: React.ReactNode }) {
   )
 }
 
-beforeEach(() => vi.stubGlobal('fetch', makeFetch(mockRecipe)))
+beforeEach(() => vi.stubGlobal('fetch', makeFetch()))
 afterEach(() => vi.unstubAllGlobals())
+
 
 describe('RecipeDetailPage', () => {
   it('renders the recipe name', async () => {
@@ -96,5 +97,20 @@ describe('RecipeDetailPage', () => {
   it('renders ingredient with null quantity without crashing', async () => {
     render(<RecipeDetailPage />, { wrapper })
     await waitFor(() => expect(screen.getByText('salt')).toBeInTheDocument())
+  })
+
+  it('shows cost per person badge when recipe includes costPerPerson', async () => {
+    const recipeWithCost = { ...mockRecipe, costPerPerson: 1.25 }
+    vi.stubGlobal('fetch', makeFetch(recipeWithCost))
+    render(<RecipeDetailPage />, { wrapper })
+    await waitFor(() => expect(screen.getByText(/~£1\.25\/person/i)).toBeInTheDocument())
+  })
+
+  it('hides cost badge when costPerPerson is null', async () => {
+    const recipeNoCost = { ...mockRecipe, costPerPerson: null }
+    vi.stubGlobal('fetch', makeFetch(recipeNoCost))
+    render(<RecipeDetailPage />, { wrapper })
+    await waitFor(() => expect(screen.getByText('Lentil Dahl')).toBeInTheDocument())
+    expect(screen.queryByText(/\/person/i)).not.toBeInTheDocument()
   })
 })
