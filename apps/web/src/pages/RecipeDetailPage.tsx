@@ -72,9 +72,16 @@ export default function RecipeDetailPage() {
         <MethodSteps steps={recipe.method} />
       </div>
 
-      <Button asChild className="w-full sm:w-auto">
-        <Link to={`/planner?recipeId=${recipe.id}`}>Add to meal plan</Link>
-      </Button>
+      <div className="flex flex-wrap gap-3">
+        <Button asChild className="flex-1 sm:flex-none">
+          <Link to={`/planner?recipeId=${recipe.id}`}>Add to meal plan</Link>
+        </Button>
+        {recipe.isCustom && (
+          <Button asChild variant="outline" className="flex-1 sm:flex-none">
+            <Link to={`/recipes/${recipe.id}/edit`}>Edit recipe</Link>
+          </Button>
+        )}
+      </div>
     </div>
   )
 }
