@@ -26,8 +26,6 @@ export default function RecipeFilters({
   onCuisineChange,
   cuisineOptions,
 }: Props) {
-  const effectiveDietary = [...new Set([...dietary, ...savedDietary])]
-
   function toggleMealType(t: MealType) {
     onMealTypeChange(mealType === t ? undefined : t)
   }
@@ -56,7 +54,7 @@ export default function RecipeFilters({
           <Button
             key={d}
             size="sm"
-            variant={effectiveDietary.includes(d) ? 'default' : 'outline'}
+            variant={dietary.includes(d) ? 'default' : 'outline'}
             onClick={() => toggleDietary(d)}
             className={cn(savedDietary.includes(d) && !dietary.includes(d) && 'ring-1 ring-nosh-green')}
           >

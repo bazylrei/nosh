@@ -79,4 +79,13 @@ describe('RecipeBrowserPage', () => {
       expect(btn).toHaveClass('bg-primary')
     })
   })
+
+  it('allows removing a saved preference filter without it snapping back', async () => {
+    vi.stubGlobal('fetch', makeFetch([mockRecipe], { dietary: ['vegetarian'] }))
+    render(<RecipeBrowserPage />, { wrapper })
+    const btn = await screen.findByRole('button', { name: /vegetarian/i })
+    await waitFor(() => expect(btn).toHaveClass('bg-primary'))
+    await userEvent.click(btn)
+    expect(btn).not.toHaveClass('bg-primary')
+  })
 })

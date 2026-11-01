@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Settings } from 'lucide-react'
@@ -19,17 +19,24 @@ export default function RecipeBrowserPage() {
 
   const debouncedSearch = useDebounce(search, 300)
   const { data: preferences } = usePreferences()
+  const initialised = useRef(false)
+
+  useEffect(() => {
+    if (!initialised.current && preferences) {
+      setDietary(preferences.dietary)
+      initialised.current = true
+    }
+  }, [preferences])
 
   const savedDietary = preferences?.dietary ?? []
-  const effectiveDietary = [...new Set([...dietary, ...savedDietary])]
 
   const { data: recipes = [], isLoading } = useQuery({
-    queryKey: ['recipes', debouncedSearch, mealType, effectiveDietary, cuisine],
+    queryKey: ['recipes', debouncedSearch, mealType, dietary, cuisine],
     queryFn: () =>
       fetchRecipes({
         search: debouncedSearch || undefined,
         mealType,
-        dietary: effectiveDietary.length ? effectiveDietary : undefined,
+        dietary: dietary.length ? dietary : undefined,
         cuisine: cuisine || undefined,
       }),
   })
