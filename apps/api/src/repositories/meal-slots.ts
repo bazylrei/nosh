@@ -16,10 +16,10 @@ export async function findMealSlotsByWeek(weekStart: string): Promise<MealSlot[]
 }
 
 export async function upsertMealSlot(data: UpsertMealSlot): Promise<MealSlot> {
-  const { id: _id, ...values } = data
+  const { day, mealType, recipeId, serves, weekStart } = data
   const [row] = await db
     .insert(mealSlots)
-    .values(values)
+    .values({ day, mealType, recipeId, serves, weekStart })
     .onConflictDoUpdate({
       target: [mealSlots.day, mealSlots.mealType, mealSlots.weekStart],
       set: { recipeId: sql`excluded.recipe_id`, serves: sql`excluded.serves` },
