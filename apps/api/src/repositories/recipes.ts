@@ -1,4 +1,4 @@
-import { eq, and, ilike, arrayContains, sql } from 'drizzle-orm'
+import { eq, and, ilike, arrayContains, inArray, sql } from 'drizzle-orm'
 import { db } from '../db/client.js'
 import { recipes } from '../db/schema.js'
 import type { Recipe, CreateRecipe, UpdateRecipe, MealType, Dietary } from '@nosh/shared'
@@ -6,7 +6,7 @@ import type { Recipe, CreateRecipe, UpdateRecipe, MealType, Dietary } from '@nos
 export type RecipeFilters = {
   mealType?: MealType
   dietary?: Dietary[]
-  cuisine?: string
+  cuisine?: string[]
   search?: string
 }
 
@@ -28,8 +28,8 @@ export async function findRecipes(filters: RecipeFilters = {}): Promise<Recipe[]
   if (filters.dietary?.length) {
     conditions.push(arrayContains(recipes.dietary, filters.dietary))
   }
-  if (filters.cuisine) {
-    conditions.push(ilike(recipes.cuisine, filters.cuisine))
+  if (filters.cuisine?.length) {
+    conditions.push(inArray(recipes.cuisine, filters.cuisine))
   }
   if (filters.search) {
     conditions.push(ilike(recipes.name, `%${filters.search}%`))

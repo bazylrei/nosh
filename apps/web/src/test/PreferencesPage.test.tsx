@@ -4,15 +4,31 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import { vi } from 'vitest'
 import PreferencesPage from '../pages/PreferencesPage'
-import type { UserPreferences } from '@nosh/shared'
+import type { UserPreferences, Recipe } from '@nosh/shared'
 
-function makeFetch(prefs: UserPreferences) {
+const mockRecipe: Recipe = {
+  id: '1',
+  name: 'Pasta',
+  cuisine: 'Italian',
+  mealType: ['dinner'],
+  dietary: ['vegan'],
+  tags: [],
+  serves: 2,
+  isCustom: false,
+  ingredients: [],
+  method: [],
+}
+
+function makeFetch(prefs: UserPreferences, recipes: Recipe[] = [mockRecipe]) {
   return vi.fn((url: string, init?: RequestInit) => {
     if (init?.method === 'PUT') {
       const body = JSON.parse(init.body as string) as UserPreferences
       return Promise.resolve({ ok: true, json: () => Promise.resolve(body) })
     }
-    return Promise.resolve({ ok: true, json: () => Promise.resolve(prefs) })
+    if ((url as string).includes('/api/preferences')) {
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(prefs) })
+    }
+    return Promise.resolve({ ok: true, json: () => Promise.resolve(recipes) })
   })
 }
 
@@ -25,7 +41,7 @@ function wrapper({ children }: { children: React.ReactNode }) {
   )
 }
 
-beforeEach(() => vi.stubGlobal('fetch', makeFetch({ dietary: [] })))
+beforeEach(() => vi.stubGlobal('fetch', makeFetch({ dietary: [], cuisine: [] })))
 afterEach(() => vi.unstubAllGlobals())
 
 describe('PreferencesPage', () => {
@@ -37,32 +53,38 @@ describe('PreferencesPage', () => {
     expect(screen.getByLabelText(/dairy-free/i)).toBeInTheDocument()
   })
 
-  it('pre-checks saved dietary preferences', async () => {
-    vi.stubGlobal('fetch', makeFetch({ dietary: ['vegan', 'gluten-free'] }))
+  it('renders a checkbox for each available cuisine', async () => {
+    render(<PreferencesPage />, { wrapper })
+    await waitFor(() => expect(screen.getByLabelText('Italian')).toBeInTheDocument())
+  })
+
+  it('pre-checks saved dietary and cuisine preferences', async () => {
+    vi.stubGlobal('fetch', makeFetch({ dietary: ['vegan'], cuisine: ['Italian'] }))
     render(<PreferencesPage />, { wrapper })
     await waitFor(() => {
       expect(screen.getByLabelText(/vegan/i)).toBeChecked()
-      expect(screen.getByLabelText(/gluten-free/i)).toBeChecked()
+      expect(screen.getByLabelText('Italian')).toBeChecked()
       expect(screen.getByLabelText(/vegetarian/i)).not.toBeChecked()
     })
   })
 
-  it('toggles a checkbox on click', async () => {
+  it('toggles a cuisine checkbox on click', async () => {
     render(<PreferencesPage />, { wrapper })
-    await waitFor(() => expect(screen.getByLabelText(/vegetarian/i)).toBeInTheDocument())
-    const checkbox = screen.getByLabelText(/vegetarian/i)
+    await waitFor(() => expect(screen.getByLabelText('Italian')).toBeInTheDocument())
+    const checkbox = screen.getByLabelText('Italian')
     expect(checkbox).not.toBeChecked()
     await userEvent.click(checkbox)
     expect(checkbox).toBeChecked()
   })
 
-  it('calls PUT /api/preferences with selected dietary on save', async () => {
-    const fetchMock = makeFetch({ dietary: [] })
+  it('saves both dietary and cuisine on save', async () => {
+    const fetchMock = makeFetch({ dietary: [], cuisine: [] })
     vi.stubGlobal('fetch', fetchMock)
     render(<PreferencesPage />, { wrapper })
-    await waitFor(() => expect(screen.getByLabelText(/vegan/i)).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByLabelText('Italian')).toBeInTheDocument())
 
     await userEvent.click(screen.getByLabelText(/vegan/i))
+    await userEvent.click(screen.getByLabelText('Italian'))
     await userEvent.click(screen.getByRole('button', { name: /save preferences/i }))
 
     await waitFor(() => {
@@ -71,7 +93,7 @@ describe('PreferencesPage', () => {
       )
       expect(putCall).toBeDefined()
       const body = JSON.parse((putCall![1] as RequestInit).body as string)
-      expect(body).toEqual({ dietary: ['vegan'] })
+      expect(body).toEqual({ dietary: ['vegan'], cuisine: ['Italian'] })
     })
   })
 

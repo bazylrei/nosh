@@ -11,8 +11,9 @@ interface Props {
   dietary: Dietary[]
   onDietaryChange: (d: Dietary[]) => void
   savedDietary: Dietary[]
-  cuisine: string
-  onCuisineChange: (c: string) => void
+  cuisine: string[]
+  onCuisineChange: (c: string[]) => void
+  savedCuisine: string[]
   cuisineOptions: string[]
 }
 
@@ -24,6 +25,7 @@ export default function RecipeFilters({
   savedDietary,
   cuisine,
   onCuisineChange,
+  savedCuisine,
   cuisineOptions,
 }: Props) {
   function toggleMealType(t: MealType) {
@@ -32,6 +34,10 @@ export default function RecipeFilters({
 
   function toggleDietary(d: Dietary) {
     onDietaryChange(dietary.includes(d) ? dietary.filter((x) => x !== d) : [...dietary, d])
+  }
+
+  function toggleCuisine(c: string) {
+    onCuisineChange(cuisine.includes(c) ? cuisine.filter((x) => x !== c) : [...cuisine, c])
   }
 
   return (
@@ -64,16 +70,19 @@ export default function RecipeFilters({
       </div>
 
       {cuisineOptions.length > 0 && (
-        <select
-          value={cuisine}
-          onChange={(e) => onCuisineChange(e.target.value)}
-          className="rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-        >
-          <option value="">All cuisines</option>
+        <div className="flex flex-wrap gap-2">
           {cuisineOptions.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <Button
+              key={c}
+              size="sm"
+              variant={cuisine.includes(c) ? 'default' : 'outline'}
+              onClick={() => toggleCuisine(c)}
+              className={cn(savedCuisine.includes(c) && !cuisine.includes(c) && 'ring-1 ring-nosh-green')}
+            >
+              {c}
+            </Button>
           ))}
-        </select>
+        </div>
       )}
     </div>
   )
