@@ -48,6 +48,7 @@ export const ShoppingItemSchema = z.object({
 
 export const UserPreferencesSchema = z.object({
   dietary: z.array(DietarySchema).default([]),
+  cuisine: z.array(z.string()).default([]),
 })
 
 export type MealType = z.infer<typeof MealTypeSchema>

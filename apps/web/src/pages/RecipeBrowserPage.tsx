@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import SearchInput from '@/components/ui/SearchInput'
 import RecipeFilters from '@/components/recipe/RecipeFilters'
@@ -14,34 +15,50 @@ export default function RecipeBrowserPage() {
   const [search, setSearch] = useState('')
   const [mealType, setMealType] = useState<MealType | undefined>()
   const [dietary, setDietary] = useState<Dietary[]>([])
-  const [cuisine, setCuisine] = useState('')
+  const [cuisine, setCuisine] = useState<string[]>([])
 
   const debouncedSearch = useDebounce(search, 300)
   const { data: preferences } = usePreferences()
+  const initialised = useRef(false)
+
+  useEffect(() => {
+    if (!initialised.current && preferences) {
+      setDietary(preferences.dietary)
+      setCuisine(preferences.cuisine)
+      initialised.current = true
+    }
+  }, [preferences])
 
   const savedDietary = preferences?.dietary ?? []
-  const effectiveDietary = [...new Set([...dietary, ...savedDietary])]
+  const savedCuisine = preferences?.cuisine ?? []
 
   const { data: recipes = [], isLoading } = useQuery({
-    queryKey: ['recipes', debouncedSearch, mealType, effectiveDietary, cuisine],
+    queryKey: ['recipes', debouncedSearch, mealType, dietary, cuisine],
     queryFn: () =>
       fetchRecipes({
         search: debouncedSearch || undefined,
         mealType,
-        dietary: effectiveDietary.length ? effectiveDietary : undefined,
-        cuisine: cuisine || undefined,
+        dietary: dietary.length ? dietary : undefined,
+        cuisine: cuisine.length ? cuisine : undefined,
       }),
   })
 
-  const cuisineOptions = [...new Set(recipes.map((r) => r.cuisine))].sort()
+  const cuisineOptions = [...new Set(recipes.map((r) => r.cuisine).concat(savedCuisine))].sort()
 
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-3xl font-heading text-nosh-green">Recipes</h1>
-        <Button asChild>
-          <Link to="/recipes/new">+ Add recipe</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/preferences" aria-label="Preferences">
+              <Settings />
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link to="/recipes/new">+ Add recipe</Link>
+          </Button>
+        </div>
       </div>
 
       <SearchInput
@@ -58,6 +75,7 @@ export default function RecipeBrowserPage() {
         savedDietary={savedDietary}
         cuisine={cuisine}
         onCuisineChange={setCuisine}
+        savedCuisine={savedCuisine}
         cuisineOptions={cuisineOptions}
       />
 

@@ -15,7 +15,9 @@ const querySchema = z.object({
   dietary: z.union([DietarySchema, z.array(DietarySchema)]).optional().transform((v) =>
     v === undefined ? undefined : Array.isArray(v) ? v : [v],
   ),
-  cuisine: z.string().optional(),
+  cuisine: z.union([z.string(), z.array(z.string())]).optional().transform((v) =>
+    v === undefined ? undefined : Array.isArray(v) ? v : [v],
+  ),
   search: z.string().optional(),
 })
 

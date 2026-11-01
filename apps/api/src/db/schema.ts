@@ -33,4 +33,5 @@ export const mealSlots = pgTable(
 export const userPreferences = pgTable('user_preferences', {
   id: integer('id').primaryKey().default(1),
   dietary: text('dietary').array().notNull().default([]),
+  cuisine: text('cuisine').array().notNull().default([]),
 })

@@ -19,7 +19,7 @@ const mockRecipe: Recipe = {
   method: [],
 }
 
-const emptyPrefs: UserPreferences = { dietary: [] }
+const emptyPrefs: UserPreferences = { dietary: [], cuisine: [] }
 
 function makeFetch(recipes: Recipe[], prefs = emptyPrefs) {
   return vi.fn((url: string) => {
@@ -72,11 +72,29 @@ describe('RecipeBrowserPage', () => {
   })
 
   it('pre-activates dietary filters from saved preferences', async () => {
-    vi.stubGlobal('fetch', makeFetch([mockRecipe], { dietary: ['vegetarian'] }))
+    vi.stubGlobal('fetch', makeFetch([mockRecipe], { dietary: ['vegetarian'], cuisine: [] }))
     render(<RecipeBrowserPage />, { wrapper })
     await waitFor(() => {
       const btn = screen.getByRole('button', { name: /vegetarian/i })
       expect(btn).toHaveClass('bg-primary')
     })
+  })
+
+  it('pre-activates cuisine filters from saved preferences', async () => {
+    vi.stubGlobal('fetch', makeFetch([mockRecipe], { dietary: [], cuisine: ['West African'] }))
+    render(<RecipeBrowserPage />, { wrapper })
+    await waitFor(() => {
+      const btn = screen.getByRole('button', { name: /west african/i })
+      expect(btn).toHaveClass('bg-primary')
+    })
+  })
+
+  it('allows removing a saved preference filter without it snapping back', async () => {
+    vi.stubGlobal('fetch', makeFetch([mockRecipe], { dietary: ['vegetarian'], cuisine: [] }))
+    render(<RecipeBrowserPage />, { wrapper })
+    const btn = await screen.findByRole('button', { name: /vegetarian/i })
+    await waitFor(() => expect(btn).toHaveClass('bg-primary'))
+    await userEvent.click(btn)
+    expect(btn).not.toHaveClass('bg-primary')
   })
 })
