@@ -25,7 +25,7 @@ export const RecipeSchema = z.object({
   costPerPerson: z.number().nullable().optional(),
 })
 
-export const CreateRecipeSchema = RecipeSchema.omit({ id: true, isCustom: true, createdAt: true })
+export const CreateRecipeSchema = RecipeSchema.omit({ id: true, isCustom: true, createdAt: true, costPerPerson: true })
 export const UpdateRecipeSchema = CreateRecipeSchema.partial()
 
 export const MealSlotSchema = z.object({
