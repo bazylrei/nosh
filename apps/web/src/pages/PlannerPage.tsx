@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import MealGrid from '@/components/planner/MealGrid'
@@ -54,13 +54,20 @@ export default function PlannerPage() {
 
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/" aria-label="Back to recipes">
+              <ArrowLeft />
+            </Link>
+          </Button>
+          <h1 className="text-3xl font-heading text-nosh-green">Meal Planner</h1>
+        </div>
         <Button variant="ghost" size="icon" asChild>
-          <Link to="/" aria-label="Back to recipes">
-            <ArrowLeft />
+          <Link to="/shopping-list" aria-label="Shopping list">
+            <ShoppingCart />
           </Link>
         </Button>
-        <h1 className="text-3xl font-heading text-nosh-green">Meal Planner</h1>
       </div>
 
       {incomingRecipe && (

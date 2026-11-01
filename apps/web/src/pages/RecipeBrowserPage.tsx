@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Settings, CalendarDays } from 'lucide-react'
+import { Settings, CalendarDays, ShoppingCart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import SearchInput from '@/components/ui/SearchInput'
 import RecipeFilters from '@/components/recipe/RecipeFilters'
@@ -53,6 +53,11 @@ export default function RecipeBrowserPage() {
           <Button variant="ghost" size="icon" asChild>
             <Link to="/planner" aria-label="Meal planner">
               <CalendarDays />
+            </Link>
+          </Button>
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/shopping-list" aria-label="Shopping list">
+              <ShoppingCart />
             </Link>
           </Button>
           <Button variant="ghost" size="icon" asChild>
