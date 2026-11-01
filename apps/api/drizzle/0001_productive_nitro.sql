@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "meal_slots_unique_slot" ON "meal_slots" USING btree ("day","meal_type","week_start");
