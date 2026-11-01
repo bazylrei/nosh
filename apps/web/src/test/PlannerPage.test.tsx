@@ -30,10 +30,10 @@ const mockSlot: MealSlot = {
 
 function makeFetch(slots: MealSlot[] = [], recipes: Recipe[] = [mockRecipe]) {
   return vi.fn((url: string, init?: RequestInit) => {
-    if (init?.method === 'DELETE') return Promise.resolve({ ok: true, json: () => Promise.resolve(null) })
-    if (init?.method === 'PUT') return Promise.resolve({ ok: true, json: () => Promise.resolve(slots[0] ?? mockSlot) })
-    if ((url as string).includes('/api/meal-slots')) return Promise.resolve({ ok: true, json: () => Promise.resolve(slots) })
-    return Promise.resolve({ ok: true, json: () => Promise.resolve(recipes) })
+    if (init?.method === 'DELETE') return Promise.resolve({ ok: true, status: 204, json: () => Promise.reject(new SyntaxError('no body')) })
+    if (init?.method === 'PUT') return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(slots[0] ?? mockSlot) })
+    if ((url as string).includes('/api/meal-slots')) return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(slots) })
+    return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(recipes) })
   })
 }
 
@@ -90,6 +90,33 @@ describe('PlannerPage', () => {
     render(<PlannerPage />, { wrapper })
     expect(screen.getByRole('button', { name: /previous week/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /next week/i })).toBeInTheDocument()
+  })
+
+  it('removes slot from planner after clicking delete', async () => {
+    let deleted = false
+    vi.stubGlobal('fetch', vi.fn((url: string, init?: RequestInit) => {
+      if (init?.method === 'DELETE') {
+        deleted = true
+        return Promise.resolve({ ok: true, status: 204, json: () => Promise.reject(new SyntaxError('no body')) })
+      }
+      if (init?.method === 'PUT') return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(mockSlot) })
+      if ((url as string).includes('/api/meal-slots')) return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(deleted ? [] : [mockSlot]) })
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve([mockRecipe]) })
+    }))
+    render(<PlannerPage />, { wrapper })
+    await waitFor(() => expect(screen.getByText('Avocado Toast')).toBeInTheDocument())
+
+    const removeBtn = screen.getByRole('button', { name: /remove avocado toast/i })
+    await userEvent.click(removeBtn)
+
+    await waitFor(() => expect(screen.queryByText('Avocado Toast')).not.toBeInTheDocument())
+  })
+
+  it('renders recipe name as a link to the recipe detail page', async () => {
+    vi.stubGlobal('fetch', makeFetch([mockSlot]))
+    render(<PlannerPage />, { wrapper })
+    const link = await screen.findByRole('link', { name: 'Avocado Toast' })
+    expect(link).toHaveAttribute('href', '/recipes/r1')
   })
 
   it('shows incoming recipe banner when recipeId is in URL', async () => {
