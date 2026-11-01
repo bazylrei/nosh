@@ -1,4 +1,5 @@
 import { X } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import ServingStepper from '@/components/recipe/ServingStepper'
 import type { MealSlot, Recipe } from '@nosh/shared'
@@ -28,7 +29,7 @@ export default function MealSlotCell({ slot, recipe, onAdd, onRemove, onServesCh
     <div className="rounded-md border bg-card p-2 space-y-2 text-sm min-h-[5rem]">
       <div className="flex items-start justify-between gap-1">
         <div className="flex-1 min-w-0">
-          <p className="font-medium truncate">{recipe.name}</p>
+          <Link to={`/recipes/${recipe.id}`} className="font-medium truncate hover:underline block">{recipe.name}</Link>
           <p className="text-xs text-muted-foreground truncate">{recipe.cuisine}</p>
         </div>
         <Button
