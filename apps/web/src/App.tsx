@@ -3,6 +3,7 @@ import RecipeBrowserPage from '@/pages/RecipeBrowserPage'
 import RecipeDetailPage from '@/pages/RecipeDetailPage'
 import RecipeFormPage from '@/pages/RecipeFormPage'
 import PreferencesPage from '@/pages/PreferencesPage'
+import PlannerPage from '@/pages/PlannerPage'
 import DesignPage from '@/pages/DesignPage'
 
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
       <Route path="/recipes/:id" element={<RecipeDetailPage />} />
       <Route path="/recipes/:id/edit" element={<RecipeFormPage />} />
       <Route path="/preferences" element={<PreferencesPage />} />
+      <Route path="/planner" element={<PlannerPage />} />
       <Route path="/design" element={<DesignPage />} />
     </Routes>
   )

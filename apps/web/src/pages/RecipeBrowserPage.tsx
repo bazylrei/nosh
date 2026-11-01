@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Settings } from 'lucide-react'
+import { Settings, CalendarDays } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import SearchInput from '@/components/ui/SearchInput'
 import RecipeFilters from '@/components/recipe/RecipeFilters'
@@ -50,6 +50,11 @@ export default function RecipeBrowserPage() {
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-3xl font-heading text-nosh-green">Recipes</h1>
         <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/planner" aria-label="Meal planner">
+              <CalendarDays />
+            </Link>
+          </Button>
           <Button variant="ghost" size="icon" asChild>
             <Link to="/preferences" aria-label="Preferences">
               <Settings />
