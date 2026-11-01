@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, integer, boolean, jsonb, timestamp, date } from 'drizzle-orm/pg-core'
+import { pgTable, uuid, text, integer, boolean, jsonb, timestamp, date, uniqueIndex } from 'drizzle-orm/pg-core'
 import type { Ingredient } from '@nosh/shared'
 
 export const recipes = pgTable('recipes', {
@@ -15,16 +15,20 @@ export const recipes = pgTable('recipes', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-export const mealSlots = pgTable('meal_slots', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  day: integer('day').notNull(),
-  mealType: text('meal_type').notNull(),
-  recipeId: uuid('recipe_id')
-    .notNull()
-    .references(() => recipes.id, { onDelete: 'cascade' }),
-  serves: integer('serves').notNull().default(2),
-  weekStart: date('week_start').notNull(),
-})
+export const mealSlots = pgTable(
+  'meal_slots',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    day: integer('day').notNull(),
+    mealType: text('meal_type').notNull(),
+    recipeId: uuid('recipe_id')
+      .notNull()
+      .references(() => recipes.id, { onDelete: 'cascade' }),
+    serves: integer('serves').notNull().default(2),
+    weekStart: date('week_start').notNull(),
+  },
+  (t) => [uniqueIndex('meal_slots_unique_slot').on(t.day, t.mealType, t.weekStart)],
+)
 
 export const userPreferences = pgTable('user_preferences', {
   id: integer('id').primaryKey().default(1),

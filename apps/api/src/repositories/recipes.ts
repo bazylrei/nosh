@@ -1,0 +1,67 @@
+import { eq, and, ilike, arrayContains, sql } from 'drizzle-orm'
+import { db } from '../db/client.js'
+import { recipes } from '../db/schema.js'
+import type { Recipe, CreateRecipe, UpdateRecipe, MealType, Dietary } from '@nosh/shared'
+
+export type RecipeFilters = {
+  mealType?: MealType
+  dietary?: Dietary[]
+  cuisine?: string
+  search?: string
+}
+
+function toRecipe(row: typeof recipes.$inferSelect): Recipe {
+  return {
+    ...row,
+    mealType: row.mealType as MealType[],
+    dietary: row.dietary as Dietary[],
+    createdAt: row.createdAt.toISOString(),
+  }
+}
+
+export async function findRecipes(filters: RecipeFilters = {}): Promise<Recipe[]> {
+  const conditions = []
+
+  if (filters.mealType) {
+    conditions.push(sql`${recipes.mealType} @> ARRAY[${filters.mealType}]::text[]`)
+  }
+  if (filters.dietary?.length) {
+    conditions.push(sql`${recipes.dietary} @> ${filters.dietary}::text[]`)
+  }
+  if (filters.cuisine) {
+    conditions.push(ilike(recipes.cuisine, filters.cuisine))
+  }
+  if (filters.search) {
+    conditions.push(ilike(recipes.name, `%${filters.search}%`))
+  }
+
+  const rows = await db
+    .select()
+    .from(recipes)
+    .where(conditions.length ? and(...conditions) : undefined)
+
+  return rows.map(toRecipe)
+}
+
+export async function findRecipeById(id: string): Promise<Recipe | undefined> {
+  const [row] = await db.select().from(recipes).where(eq(recipes.id, id))
+  return row ? toRecipe(row) : undefined
+}
+
+export async function createRecipe(data: CreateRecipe): Promise<Recipe> {
+  const [row] = await db
+    .insert(recipes)
+    .values({ ...data, isCustom: true })
+    .returning()
+  return toRecipe(row)
+}
+
+export async function updateRecipe(id: string, data: UpdateRecipe): Promise<Recipe | undefined> {
+  const [row] = await db.update(recipes).set(data).where(eq(recipes.id, id)).returning()
+  return row ? toRecipe(row) : undefined
+}
+
+export async function deleteRecipe(id: string): Promise<boolean> {
+  const [row] = await db.delete(recipes).where(eq(recipes.id, id)).returning({ id: recipes.id })
+  return !!row
+}
