@@ -1,4 +1,5 @@
 {
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @nosh/shared build",
   "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }],
   "headers": [
     {
