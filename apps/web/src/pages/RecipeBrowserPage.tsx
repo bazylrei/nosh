@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { Button } from '@/components/ui/button'
 import SearchInput from '@/components/ui/SearchInput'
 import RecipeFilters from '@/components/recipe/RecipeFilters'
 import RecipeGrid from '@/components/recipe/RecipeGrid'
@@ -35,7 +37,12 @@ export default function RecipeBrowserPage() {
 
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">
-      <h1 className="text-3xl font-heading text-nosh-green">Recipes</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-3xl font-heading text-nosh-green">Recipes</h1>
+        <Button asChild>
+          <Link to="/recipes/new">+ Add recipe</Link>
+        </Button>
+      </div>
 
       <SearchInput
         value={search}
