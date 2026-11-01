@@ -10,10 +10,6 @@ const app = new Hono().basePath('/api')
 
 app.use(logger())
 app.use(cors({ origin: process.env.CORS_ORIGIN ?? 'http://localhost:5173' }))
-app.use('*', async (c, next) => {
-  await next()
-  c.res.headers.set('Cache-Control', 'no-store')
-})
 
 app.get('/health', (c) => c.json({ ok: true }))
 app.route('/recipes', recipesRoute)
