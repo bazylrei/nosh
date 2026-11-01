@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import type { Recipe } from '@nosh/shared'
@@ -8,7 +9,8 @@ interface Props {
 
 export default function RecipeCard({ recipe }: Props) {
   return (
-    <Card className="flex flex-col">
+    <Link to={`/recipes/${recipe.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg">
+    <Card className="flex flex-col h-full transition-colors hover:border-nosh-green">
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-base leading-snug">{recipe.name}</CardTitle>
@@ -33,5 +35,6 @@ export default function RecipeCard({ recipe }: Props) {
         )}
       </CardContent>
     </Card>
+    </Link>
   )
 }
