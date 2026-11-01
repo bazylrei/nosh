@@ -2,9 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+  Nosh brand palette mapped to shadcn/ui CSS variables.
+  All values are in HSL format (without the hsl() wrapper) so Tailwind
+  can compose opacity modifiers like bg-primary/50.
+
+  Brand hex refs:
+    Green   #62CC9B  → hsl(152 52% 59%)
+    Teal    #3AA58F  → hsl(169 48% 44%)
+    Charcoal #2E373E → hsl(204 15% 21%)
+    Coral   #F3764B  → hsl(18  87% 62%)
+    Leaf    #D5C52D  → hsl(55  65% 47%)
+    Grey    #B7BFC0  → hsl(195  5% 73%)
+*/
 @layer base {
+  :root {
+    --background: 204 15% 21%;          /* Charcoal */
+    --foreground: 0 0% 98%;
+
+    --card: 204 15% 25%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 204 15% 18%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 152 52% 59%;             /* Nosh Green */
+    --primary-foreground: 204 15% 12%;
+
+    --secondary: 169 48% 44%;           /* Deep Teal — use dark foreground (5.5:1) */
+    --secondary-foreground: 204 15% 12%;
+
+    --muted: 204 12% 32%;
+    --muted-foreground: 195 5% 73%;     /* Cloud Grey */
+
+    --accent: 18 87% 62%;               /* Flame Coral — use dark foreground (5.9:1) */
+    --accent-foreground: 204 15% 12%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 204 12% 30%;
+    --input: 204 12% 28%;
+    --ring: 152 52% 59%;                /* Nosh Green */
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
   body {
-    @apply bg-nosh-charcoal text-white font-body;
+    @apply bg-background text-foreground font-body;
+    -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
