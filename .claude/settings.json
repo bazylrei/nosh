@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm --filter @nosh/web lint)",
+      "Bash(pnpm --filter @nosh/api lint)",
+      "Bash(pnpm --filter @nosh/shared build)",
+      "Bash(pnpm --filter @nosh/web test *)",
+      "Bash(pnpm --filter @nosh/api test *)",
+      "Bash(pnpm --dir * --filter @nosh/web lint)",
+      "Bash(pnpm --dir * --filter @nosh/api lint)",
+      "Bash(pnpm list *)",
+      "Bash(pnpm --filter * lint)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath // \"\"' | { read -r f; [[ \"$f\" != *.ts && \"$f\" != *.tsx ]] && exit 0; NOSH=\"/Users/bazylreinstein/Documents/MISC/Enablis/nosh\"; if [[ \"$f\" == *\"/apps/web/\"* ]]; then pnpm --dir \"$NOSH\" --filter @nosh/web lint 2>&1; elif [[ \"$f\" == *\"/apps/api/\"* ]]; then pnpm --dir \"$NOSH\" --filter @nosh/api lint 2>&1; elif [[ \"$f\" == *\"/packages/\"* ]]; then pnpm --dir \"$NOSH\" --filter @nosh/web lint 2>&1 && pnpm --dir \"$NOSH\" --filter @nosh/api lint 2>&1; fi; } || true",
+            "timeout": 30,
+            "statusMessage": "Type-checking..."
+          }
+        ]
+      }
+    ]
+  }
+}
