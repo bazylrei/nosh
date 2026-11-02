@@ -9,6 +9,7 @@ import RecipeGrid from '@/components/recipe/RecipeGrid'
 import { fetchRecipes } from '@/lib/recipes'
 import { useDebounce } from '@/hooks/useDebounce'
 import { usePreferences } from '@/hooks/usePreferences'
+import ThemeToggle from '@/components/ThemeToggle'
 import type { MealType, Dietary } from '@nosh/shared'
 
 export default function RecipeBrowserPage() {
@@ -68,6 +69,7 @@ export default function RecipeBrowserPage() {
               <Settings />
             </Link>
           </Button>
+          <ThemeToggle />
           <Button asChild>
             <Link to="/recipes/new">+ Add recipe</Link>
           </Button>
