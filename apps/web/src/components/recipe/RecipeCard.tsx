@@ -30,7 +30,7 @@ export default function RecipeCard({ recipe }: Props) {
         {recipe.dietary.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {recipe.dietary.map((d) => (
-              <Badge key={d} variant="outline">{d}</Badge>
+              <Badge key={d} variant="outline" className="border-nosh-leaf/40 bg-nosh-leaf/10 text-nosh-leaf">{d}</Badge>
             ))}
           </div>
         )}
