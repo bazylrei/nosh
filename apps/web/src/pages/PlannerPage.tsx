@@ -76,7 +76,7 @@ export default function PlannerPage() {
         </div>
       )}
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3" role="group" aria-label="Week navigation">
         <Button
           variant="outline"
           size="icon"

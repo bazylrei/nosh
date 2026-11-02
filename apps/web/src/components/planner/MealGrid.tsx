@@ -37,7 +37,7 @@ export default function MealGrid({ slots, recipeMap, onAdd, onRemove, onServesCh
             <div className="grid grid-cols-2 gap-2">
               {MEAL_TYPES.map((mealType) => (
                 <div key={mealType}>
-                  <p className="text-xs text-muted-foreground capitalize mb-1">{mealType}</p>
+                  <h4 className="text-xs text-muted-foreground capitalize mb-1">{mealType}</h4>
                   {renderCell(dayIdx, mealType)}
                 </div>
               ))}

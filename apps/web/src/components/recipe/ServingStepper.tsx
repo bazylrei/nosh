@@ -19,7 +19,7 @@ export default function ServingStepper({ value, min = 1, max = 12, onChange }: P
       >
         −
       </Button>
-      <span className="w-6 text-center text-lg font-heading" aria-label={`${value} serves`}>{value}</span>
+      <span className="w-6 text-center text-lg font-heading" aria-label={`${value} serves`} aria-live="polite" aria-atomic="true">{value}</span>
       <Button
         variant="outline"
         size="icon"

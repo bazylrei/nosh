@@ -31,7 +31,7 @@ export default function RecipeDetailPage() {
   return (
     <div className="min-h-screen bg-background p-6 max-w-2xl mx-auto space-y-8">
       <div>
-        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">← All recipes</Link>
+        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground rounded px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">← All recipes</Link>
       </div>
 
       <div className="space-y-3">

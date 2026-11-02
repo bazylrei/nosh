@@ -34,7 +34,7 @@ export default function RecipePickerDialog({ open, onOpenChange, mealType, onSel
           {recipes.map((recipe) => (
             <li key={recipe.id}>
               <button
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-accent text-sm"
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-accent text-sm min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 onClick={() => { onSelect(recipe); onOpenChange(false) }}
               >
                 <span className="font-medium">{recipe.name}</span>
