@@ -48,7 +48,10 @@ export default function RecipeBrowserPage() {
   return (
     <div className="min-h-screen bg-background p-4 md:p-6 space-y-6">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-3xl font-heading text-nosh-green">Recipes</h1>
+        <div className="flex items-center gap-2.5">
+          <img src="/nosh-icon.png" alt="" aria-hidden="true" className="h-10 w-10" />
+          <h1 className="text-3xl font-heading text-nosh-green">Nosh</h1>
+        </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="hidden md:inline-flex" asChild>
             <Link to="/planner" aria-label="Meal planner">
