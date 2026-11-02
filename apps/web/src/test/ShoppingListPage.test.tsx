@@ -7,19 +7,22 @@ import ShoppingListPage from '../pages/ShoppingListPage'
 import type { ShoppingItem } from '@nosh/shared'
 
 const mockItems: ShoppingItem[] = [
-  { item: 'chicken breast', totalQuantity: 600, unit: 'g' },
-  { item: 'onion', totalQuantity: 2, unit: null },
-  { item: 'salt and pepper', totalQuantity: null, unit: null },
+  { item: 'chicken breast', totalQuantity: 600, unit: 'g', checked: false },
+  { item: 'onion', totalQuantity: 2, unit: null, checked: false },
+  { item: 'salt and pepper', totalQuantity: null, unit: null, checked: false },
 ]
 
 function makeFetch(items: ShoppingItem[] = mockItems) {
-  return vi.fn(() =>
-    Promise.resolve({ ok: true, json: () => Promise.resolve(items) })
-  )
+  return vi.fn((url: string, init?: RequestInit) => {
+    if (init?.method === 'PATCH' || init?.method === 'DELETE') {
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ok: true }) })
+    }
+    return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(items) })
+  })
 }
 
 function wrapper({ children }: { children: React.ReactNode }) {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })
   return (
     <QueryClientProvider client={client}>
       <MemoryRouter initialEntries={['/shopping-list']}>
@@ -61,12 +64,66 @@ describe('ShoppingListPage', () => {
     expect(screen.getByText('—')).toBeInTheDocument()
   })
 
+  it('renders a checkbox for each item', async () => {
+    render(<ShoppingListPage />, { wrapper })
+    await waitFor(() => expect(screen.getByText('chicken breast')).toBeInTheDocument())
+    expect(screen.getAllByRole('checkbox')).toHaveLength(3)
+  })
+
   it('shows empty state when no meals are planned', async () => {
     vi.stubGlobal('fetch', makeFetch([]))
     render(<ShoppingListPage />, { wrapper })
     await waitFor(() =>
       expect(screen.getByText(/no meals planned/i)).toBeInTheDocument()
     )
+  })
+
+  it('calls PATCH when a checkbox is toggled', async () => {
+    const fetchMock = makeFetch()
+    vi.stubGlobal('fetch', fetchMock)
+    render(<ShoppingListPage />, { wrapper })
+    await waitFor(() => expect(screen.getByText('chicken breast')).toBeInTheDocument())
+
+    const checkboxes = screen.getAllByRole('checkbox')
+    await userEvent.click(checkboxes[0])
+
+    await waitFor(() => {
+      const patchCall = fetchMock.mock.calls.find(([, init]) => init?.method === 'PATCH')
+      expect(patchCall).toBeDefined()
+    })
+  })
+
+  it('shows Uncheck all button when items are checked', async () => {
+    const checkedItems: ShoppingItem[] = [
+      { item: 'chicken breast', totalQuantity: 600, unit: 'g', checked: true },
+      { item: 'onion', totalQuantity: 2, unit: null, checked: false },
+    ]
+    vi.stubGlobal('fetch', makeFetch(checkedItems))
+    render(<ShoppingListPage />, { wrapper })
+    await waitFor(() => expect(screen.getByRole('button', { name: /uncheck all/i })).toBeInTheDocument())
+  })
+
+  it('does not show Uncheck all when nothing is checked', async () => {
+    render(<ShoppingListPage />, { wrapper })
+    await waitFor(() => expect(screen.getByText('chicken breast')).toBeInTheDocument())
+    expect(screen.queryByRole('button', { name: /uncheck all/i })).not.toBeInTheDocument()
+  })
+
+  it('calls DELETE when Uncheck all is clicked', async () => {
+    const checkedItems: ShoppingItem[] = [
+      { item: 'chicken breast', totalQuantity: 600, unit: 'g', checked: true },
+    ]
+    const fetchMock = makeFetch(checkedItems)
+    vi.stubGlobal('fetch', fetchMock)
+    render(<ShoppingListPage />, { wrapper })
+    await waitFor(() => expect(screen.getByRole('button', { name: /uncheck all/i })).toBeInTheDocument())
+
+    await userEvent.click(screen.getByRole('button', { name: /uncheck all/i }))
+
+    await waitFor(() => {
+      const deleteCall = fetchMock.mock.calls.find(([, init]) => init?.method === 'DELETE')
+      expect(deleteCall).toBeDefined()
+    })
   })
 
   it('re-fetches when week changes', async () => {

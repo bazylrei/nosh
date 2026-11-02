@@ -20,7 +20,7 @@ export function buildShoppingList(slots: MealSlot[], recipesById: Map<string, Re
             ? existing.totalQuantity + scaledQty
             : null
       } else {
-        totals.set(key, { item: ing.item, totalQuantity: scaledQty, unit: ing.unit ?? null })
+        totals.set(key, { item: ing.item, totalQuantity: scaledQty, unit: ing.unit ?? null, checked: false })
       }
     }
   }

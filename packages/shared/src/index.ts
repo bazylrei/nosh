@@ -45,6 +45,7 @@ export const ShoppingItemSchema = z.object({
   item: z.string(),
   totalQuantity: z.number().nullable(),
   unit: z.string().nullable(),
+  checked: z.boolean().default(false),
 })
 
 export const UserPreferencesSchema = z.object({

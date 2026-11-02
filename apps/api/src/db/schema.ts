@@ -30,6 +30,19 @@ export const mealSlots = pgTable(
   (t) => [uniqueIndex('meal_slots_unique_slot').on(t.day, t.mealType, t.weekStart)],
 )
 
+export const shoppingListChecks = pgTable(
+  'shopping_list_checks',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    weekStart: date('week_start').notNull(),
+    item: text('item').notNull(),
+    unit: text('unit').notNull().default(''),
+    checked: boolean('checked').notNull().default(true),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (t) => [uniqueIndex('shopping_list_checks_unique').on(t.weekStart, t.item, t.unit)],
+)
+
 export const userPreferences = pgTable('user_preferences', {
   id: integer('id').primaryKey().default(1),
   dietary: text('dietary').array().notNull().default([]),
