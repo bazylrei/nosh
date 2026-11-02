@@ -46,21 +46,21 @@ export default function RecipeBrowserPage() {
   const cuisineOptions = [...new Set(recipes.map((r) => r.cuisine).concat(savedCuisine))].sort()
 
   return (
-    <div className="min-h-screen bg-background p-6 space-y-6">
+    <div className="min-h-screen bg-background p-4 md:p-6 space-y-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-3xl font-heading text-nosh-green">Recipes</h1>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex" asChild>
             <Link to="/planner" aria-label="Meal planner">
               <CalendarDays />
             </Link>
           </Button>
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex" asChild>
             <Link to="/shopping-list" aria-label="Shopping list">
               <ShoppingCart />
             </Link>
           </Button>
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex" asChild>
             <Link to="/preferences" aria-label="Preferences">
               <Settings />
             </Link>
