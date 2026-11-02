@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { usePreferences, useSavePreferences } from '@/hooks/usePreferences'
 import { useCuisines } from '@/hooks/useCuisines'
+import ThemeToggle from '@/components/ThemeToggle'
 import type { Dietary } from '@nosh/shared'
 
 const DIETARY_OPTIONS: { value: Dietary; label: string }[] = [
@@ -47,6 +48,7 @@ export default function PreferencesPage() {
           </Link>
         </Button>
         <h1 className="text-3xl font-heading text-nosh-green">Preferences</h1>
+        <ThemeToggle />
       </div>
 
       <section className="space-y-3">

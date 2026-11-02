@@ -14,9 +14,43 @@
     Coral   #F3764B  → hsl(18  87% 62%)
     Leaf    #D5C52D  → hsl(55  65% 47%)
     Grey    #B7BFC0  → hsl(195  5% 73%)
+
+  Light mode is :root (default). Dark mode overrides inside .dark {}.
 */
 @layer base {
   :root {
+    --background: 0 0% 98%;
+    --foreground: 204 15% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 204 15% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 204 15% 15%;
+
+    --primary: 152 52% 59%;             /* Nosh Green */
+    --primary-foreground: 204 15% 12%;
+
+    --secondary: 169 48% 44%;           /* Deep Teal */
+    --secondary-foreground: 204 15% 12%;
+
+    --muted: 210 10% 93%;
+    --muted-foreground: 204 10% 45%;
+
+    --accent: 18 87% 62%;               /* Flame Coral */
+    --accent-foreground: 204 15% 12%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 214 13% 88%;
+    --input: 214 13% 88%;
+    --ring: 152 52% 59%;                /* Nosh Green */
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
     --background: 204 15% 21%;          /* Charcoal */
     --foreground: 0 0% 98%;
 
@@ -26,26 +60,11 @@
     --popover: 204 15% 18%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 152 52% 59%;             /* Nosh Green */
-    --primary-foreground: 204 15% 12%;
-
-    --secondary: 169 48% 44%;           /* Deep Teal — use dark foreground (5.5:1) */
-    --secondary-foreground: 204 15% 12%;
-
     --muted: 204 12% 32%;
     --muted-foreground: 195 5% 73%;     /* Cloud Grey */
 
-    --accent: 18 87% 62%;               /* Flame Coral — use dark foreground (5.9:1) */
-    --accent-foreground: 204 15% 12%;
-
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
-
     --border: 204 12% 30%;
     --input: 204 12% 28%;
-    --ring: 152 52% 59%;                /* Nosh Green */
-
-    --radius: 0.5rem;
   }
 }
 
