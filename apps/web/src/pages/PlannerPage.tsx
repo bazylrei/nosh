@@ -53,17 +53,17 @@ export default function PlannerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 space-y-6">
+    <div className="min-h-screen bg-background p-4 md:p-6 space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex" asChild>
             <Link to="/" aria-label="Back to recipes">
               <ArrowLeft />
             </Link>
           </Button>
           <h1 className="text-3xl font-heading text-nosh-green">Meal Planner</h1>
         </div>
-        <Button variant="ghost" size="icon" asChild>
+        <Button variant="ghost" size="icon" className="hidden md:inline-flex" asChild>
           <Link to="/shopping-list" aria-label="Shopping list">
             <ShoppingCart />
           </Link>

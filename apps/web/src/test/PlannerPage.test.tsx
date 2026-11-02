@@ -56,9 +56,10 @@ afterEach(() => vi.unstubAllGlobals())
 describe('PlannerPage', () => {
   it('renders meal type column headers', () => {
     render(<PlannerPage />, { wrapper })
-    expect(screen.getByText('breakfast')).toBeInTheDocument()
-    expect(screen.getByText('lunch')).toBeInTheDocument()
-    expect(screen.getByText('dinner')).toBeInTheDocument()
+    // Both mobile and desktop layouts render; getAllByText handles either/both being visible
+    expect(screen.getAllByText('breakfast')[0]).toBeInTheDocument()
+    expect(screen.getAllByText('lunch')[0]).toBeInTheDocument()
+    expect(screen.getAllByText('dinner')[0]).toBeInTheDocument()
   })
 
   it('renders day row labels', () => {
@@ -70,13 +71,14 @@ describe('PlannerPage', () => {
   it('renders add buttons for empty slots', () => {
     render(<PlannerPage />, { wrapper })
     const addBtns = screen.getAllByRole('button', { name: /add recipe/i })
-    expect(addBtns.length).toBe(21) // 7 days × 3 meal types
+    // Mobile and desktop grids both render in jsdom (CSS not applied) — 21 slots × 2 layouts
+    expect(addBtns.length).toBe(42)
   })
 
   it('shows recipe name in a filled slot', async () => {
     vi.stubGlobal('fetch', makeFetch([mockSlot]))
     render(<PlannerPage />, { wrapper })
-    await waitFor(() => expect(screen.getByText('Avocado Toast')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getAllByText('Avocado Toast').length).toBeGreaterThan(0))
   })
 
   it('opens recipe picker when clicking an empty slot', async () => {
@@ -104,19 +106,19 @@ describe('PlannerPage', () => {
       return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve([mockRecipe]) })
     }))
     render(<PlannerPage />, { wrapper })
-    await waitFor(() => expect(screen.getByText('Avocado Toast')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getAllByText('Avocado Toast').length).toBeGreaterThan(0))
 
-    const removeBtn = screen.getByRole('button', { name: /remove avocado toast/i })
+    const removeBtn = screen.getAllByRole('button', { name: /remove avocado toast/i })[0]
     await userEvent.click(removeBtn)
 
-    await waitFor(() => expect(screen.queryByText('Avocado Toast')).not.toBeInTheDocument())
+    await waitFor(() => expect(screen.queryAllByText('Avocado Toast')).toHaveLength(0))
   })
 
   it('renders recipe name as a link to the recipe detail page', async () => {
     vi.stubGlobal('fetch', makeFetch([mockSlot]))
     render(<PlannerPage />, { wrapper })
-    const link = await screen.findByRole('link', { name: 'Avocado Toast' })
-    expect(link).toHaveAttribute('href', '/recipes/r1')
+    const links = await screen.findAllByRole('link', { name: 'Avocado Toast' })
+    expect(links[0]).toHaveAttribute('href', '/recipes/r1')
   })
 
   it('shows incoming recipe banner when recipeId is in URL', async () => {
@@ -131,7 +133,7 @@ describe('PlannerPage', () => {
       </QueryClientProvider>
     )
     await waitFor(() =>
-      expect(screen.getByText(/avocado toast/i)).toBeInTheDocument()
+      expect(screen.getAllByText(/avocado toast/i).length).toBeGreaterThan(0)
     )
   })
 })

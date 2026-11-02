@@ -10,7 +10,7 @@ export default function ShoppingListPage() {
   const { data: items = [], isLoading } = useShoppingList(weekStart)
 
   return (
-    <div className="min-h-screen bg-background p-6 max-w-2xl mx-auto space-y-6">
+    <div className="min-h-screen bg-background p-4 md:p-6 max-w-2xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" asChild>
           <Link to="/planner" aria-label="Back to planner">
