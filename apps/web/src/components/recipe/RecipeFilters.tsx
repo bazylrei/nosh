@@ -41,52 +41,61 @@ export default function RecipeFilters({
   }
 
   return (
-    <div className="space-y-2">
-      <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by meal type">
-        {MEAL_TYPES.map((t) => (
-          <Button
-            key={t}
-            size="sm"
-            variant={mealType === t ? 'default' : 'outline'}
-            aria-pressed={mealType === t}
-            onClick={() => toggleMealType(t)}
-          >
-            {t}
-          </Button>
-        ))}
+    <div className="space-y-4">
+      <div className="space-y-1.5">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Meal type</p>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by meal type">
+          {MEAL_TYPES.map((t) => (
+            <Button
+              key={t}
+              size="sm"
+              variant={mealType === t ? 'default' : 'outline'}
+              aria-pressed={mealType === t}
+              onClick={() => toggleMealType(t)}
+            >
+              {t}
+            </Button>
+          ))}
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by dietary requirement">
-        {DIETARY_OPTIONS.map((d) => (
-          <Button
-            key={d}
-            size="sm"
-            variant={dietary.includes(d) ? 'default' : 'outline'}
-            aria-pressed={dietary.includes(d)}
-            onClick={() => toggleDietary(d)}
-            className={cn(savedDietary.includes(d) && !dietary.includes(d) && 'ring-1 ring-nosh-green')}
-          >
-            {d}
-            {savedDietary.includes(d) && !dietary.includes(d) && <span className="sr-only">(saved preference)</span>}
-          </Button>
-        ))}
+      <div className="space-y-1.5">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Dietary</p>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by dietary requirement">
+          {DIETARY_OPTIONS.map((d) => (
+            <Button
+              key={d}
+              size="sm"
+              variant={dietary.includes(d) ? 'default' : 'outline'}
+              aria-pressed={dietary.includes(d)}
+              onClick={() => toggleDietary(d)}
+              className={cn(savedDietary.includes(d) && !dietary.includes(d) && 'ring-1 ring-nosh-green')}
+            >
+              {d}
+              {savedDietary.includes(d) && !dietary.includes(d) && <span className="sr-only">(saved preference)</span>}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {cuisineOptions.length > 0 && (
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by cuisine">
-          {cuisineOptions.map((c) => (
-            <Button
-              key={c}
-              size="sm"
-              variant={cuisine.includes(c) ? 'default' : 'outline'}
-              aria-pressed={cuisine.includes(c)}
-              onClick={() => toggleCuisine(c)}
-              className={cn(savedCuisine.includes(c) && !cuisine.includes(c) && 'ring-1 ring-nosh-green')}
-            >
-              {c}
-              {savedCuisine.includes(c) && !cuisine.includes(c) && <span className="sr-only">(saved preference)</span>}
-            </Button>
-          ))}
+        <div className="space-y-1.5">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Cuisine</p>
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by cuisine">
+            {cuisineOptions.map((c) => (
+              <Button
+                key={c}
+                size="sm"
+                variant={cuisine.includes(c) ? 'default' : 'outline'}
+                aria-pressed={cuisine.includes(c)}
+                onClick={() => toggleCuisine(c)}
+                className={cn(savedCuisine.includes(c) && !cuisine.includes(c) && 'ring-1 ring-nosh-green')}
+              >
+                {c}
+                {savedCuisine.includes(c) && !cuisine.includes(c) && <span className="sr-only">(saved preference)</span>}
+              </Button>
+            ))}
+          </div>
         </div>
       )}
     </div>

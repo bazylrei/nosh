@@ -17,7 +17,7 @@ export default function RecipeCard({ recipe }: Props) {
           {recipe.isCustom && <Badge variant="secondary" className="shrink-0">Custom</Badge>}
         </div>
         <p className="text-sm text-muted-foreground">
-          {recipe.cuisine} · Serves {recipe.serves}
+          Serves {recipe.serves}
           {recipe.costPerPerson != null && ` · ~£${recipe.costPerPerson.toFixed(2)}/person`}
         </p>
       </CardHeader>
@@ -26,14 +26,11 @@ export default function RecipeCard({ recipe }: Props) {
           {recipe.mealType.map((t) => (
             <Badge key={t}>{t}</Badge>
           ))}
+          <Badge variant="outline" className="border-nosh-teal/40 bg-nosh-teal/10 text-nosh-teal">{recipe.cuisine}</Badge>
+          {recipe.dietary.map((d) => (
+            <Badge key={d} variant="outline" className="border-nosh-leaf/40 bg-nosh-leaf/10 text-nosh-leaf">{d}</Badge>
+          ))}
         </div>
-        {recipe.dietary.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {recipe.dietary.map((d) => (
-              <Badge key={d} variant="outline">{d}</Badge>
-            ))}
-          </div>
-        )}
       </CardContent>
     </Card>
     </Link>

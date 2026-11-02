@@ -39,10 +39,10 @@ export default function RecipeDetailPage() {
           <h1 className="text-3xl font-heading text-nosh-green">{recipe.name}</h1>
           {recipe.isCustom && <Badge variant="secondary">Custom</Badge>}
         </div>
-        <p className="text-muted-foreground">{recipe.cuisine}</p>
         <div className="flex flex-wrap gap-2">
           {recipe.mealType.map((t) => <Badge key={t}>{t}</Badge>)}
-          {recipe.dietary.map((d) => <Badge key={d} variant="outline">{d}</Badge>)}
+          <Badge variant="outline" className="border-nosh-teal/40 bg-nosh-teal/10 text-nosh-teal">{recipe.cuisine}</Badge>
+          {recipe.dietary.map((d) => <Badge key={d} variant="outline" className="border-nosh-leaf/40 bg-nosh-leaf/10 text-nosh-leaf">{d}</Badge>)}
           {recipe.costPerPerson != null && (
             <CostBadge costPerPerson={recipe.costPerPerson} serves={selectedServes} />
           )}
@@ -81,7 +81,7 @@ export default function RecipeDetailPage() {
           <Link to={`/planner?recipeId=${recipe.id}`}>Add to meal plan</Link>
         </Button>
         {recipe.isCustom && (
-          <Button asChild variant="outline" className="flex-1 sm:flex-none">
+          <Button asChild variant="secondary" className="flex-1 sm:flex-none">
             <Link to={`/recipes/${recipe.id}/edit`}>Edit recipe</Link>
           </Button>
         )}
