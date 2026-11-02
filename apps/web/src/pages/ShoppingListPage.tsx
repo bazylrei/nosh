@@ -2,12 +2,17 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useShoppingList } from '@/hooks/useShoppingList'
+import { useShoppingList, useToggleShoppingCheck, useUncheckAll } from '@/hooks/useShoppingList'
 import { getWeekStart, shiftWeek, formatWeekLabel } from '@/lib/week'
+import { cn } from '@/lib/utils'
 
 export default function ShoppingListPage() {
   const [weekStart, setWeekStart] = useState(getWeekStart)
   const { data: items = [], isLoading } = useShoppingList(weekStart)
+  const { mutate: toggle } = useToggleShoppingCheck(weekStart)
+  const { mutate: uncheckAll, isPending: isUncheckingAll } = useUncheckAll(weekStart)
+
+  const checkedCount = items.filter((i) => i.checked).length
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-6 max-w-2xl mx-auto space-y-6">
@@ -52,18 +57,55 @@ export default function ShoppingListPage() {
       )}
 
       {items.length > 0 && (
-        <ul className="divide-y rounded-lg border">
-          {items.map((item) => (
-            <li key={`${item.item}::${item.unit ?? ''}`} className="flex items-center justify-between px-4 py-3 text-sm">
-              <span className="font-medium capitalize">{item.item}</span>
-              <span className="text-muted-foreground">
-                {item.totalQuantity !== null
-                  ? `${Math.round(item.totalQuantity * 10) / 10}${item.unit ? ` ${item.unit}` : ''}`
-                  : item.unit ?? '—'}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <>
+          {checkedCount > 0 && (
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{checkedCount} of {items.length} picked up</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => uncheckAll()}
+                disabled={isUncheckingAll}
+              >
+                Uncheck all
+              </Button>
+            </div>
+          )}
+          <ul className="divide-y rounded-lg border">
+            {items.map((item) => {
+              const key = `${item.item}::${item.unit ?? ''}`
+              return (
+                <li
+                  key={key}
+                  className={cn(
+                    'flex items-center gap-3 px-4 py-3 text-sm transition-opacity',
+                    item.checked && 'opacity-50',
+                  )}
+                >
+                  <input
+                    type="checkbox"
+                    id={key}
+                    checked={item.checked}
+                    onChange={(e) => toggle({ item: item.item, unit: item.unit, checked: e.target.checked })}
+                    className="h-4 w-4 rounded border-input accent-nosh-green shrink-0"
+                    aria-label={`Mark ${item.item} as ${item.checked ? 'not picked up' : 'picked up'}`}
+                  />
+                  <label
+                    htmlFor={key}
+                    className={cn('flex-1 cursor-pointer font-medium capitalize', item.checked && 'line-through')}
+                  >
+                    {item.item}
+                  </label>
+                  <span className="text-muted-foreground shrink-0">
+                    {item.totalQuantity !== null
+                      ? `${Math.round(item.totalQuantity * 10) / 10}${item.unit ? ` ${item.unit}` : ''}`
+                      : item.unit ?? '—'}
+                  </span>
+                </li>
+              )
+            })}
+          </ul>
+        </>
       )}
     </div>
   )
